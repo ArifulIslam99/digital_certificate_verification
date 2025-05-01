@@ -42,10 +42,10 @@ sui client publish --gas-budget 100000000
 
 # 4. Copy the Package ID from the publish output
 # This is your deployed contract's unique identifier
-```
+
 🔗 Deployed Contract Addresses
 
 | Platform | Network | Contract Address / Package ID |
 |----------|---------|-------------------------------|
-| **Ethereum** | Sepolia Testnet | [`0xYourEthereumContractAddress`](https://sepolia.etherscan.io/address/0xYourEthereumContractAddress) |
-| **Sui** | Sui Testnet | [`0x8Eea8E6acd7c018D60C22162E6cDCE05f0ee249E`](https://sepolia.etherscan.io/address/0x8Eea8E6acd7c018D60C22162E6cDCE05f0ee249E) |
+| **Ethereum** | Sepolia Testnet | [`0x8Eea8E6acd7c018D60C22162E6cDCE05f0ee249E`](https://sepolia.etherscan.io/address/0x8Eea8E6acd7c018D60C22162E6cDCE05f0ee249E) |
+| **Sui** | Sui Testnet | [`0xa07b80f6e13a408cf659ce5994243cffeb43e3febb537e27c06cc58545346608`](https://suiscan.xyz/testnet/object/0xa07b80f6e13a408cf659ce5994243cffeb43e3febb537e27c06cc58545346608/tx-blocks) |
