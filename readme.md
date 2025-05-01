@@ -42,7 +42,7 @@ sui client publish --gas-budget 100000000
 
 # 4. Copy the Package ID from the publish output
 # This is your deployed contract's unique identifier
-
+```
 🔗 Deployed Contract Addresses
 
 | Platform | Network | Contract Address / Package ID |
