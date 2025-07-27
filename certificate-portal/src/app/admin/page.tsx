@@ -33,10 +33,11 @@ export default function Admin() {
     fetchCertificateId();
   }, []);
 
-  const handleAction = async (action: () => Promise<boolean>) => {
+  const handleAction = async (action: () => Promise<boolean | { success: boolean }>) => {
     setLoading(true);
     setMessage('');
-    const success = await action();
+    const result = await action();
+    const success = typeof result === 'boolean' ? result : result.success;
     setMessage(success ? 'Action successful!' : 'Action failed. Check console for details.');
     setLoading(false);
     // Refresh certificate ID after an action

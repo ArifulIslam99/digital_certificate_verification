@@ -23,7 +23,7 @@ function bytesToSuiAddress(bytes: any[]) {
 
 function bytesToCleanString(bytes: any) {
   // Keep printable ASCII
-  const filtered = bytes.filter(b => b >= 32 && b <= 126);
+  const filtered = bytes.filter((b: any) => b >= 32 && b <= 126);
   let str = new TextDecoder().decode(new Uint8Array(filtered));
 
   // Remove leading non-letter/non-digit characters (like + - etc.)
@@ -45,9 +45,9 @@ export async function verifyCertificate(certId: string) {
       transactionBlock: tx,
       sender: MY_ADDRESS,
     });
-    let revoked = result?.results?.[0].returnValues[0][0][0];
-    let studentName = bytesToCleanString(result?.results?.[0].returnValues[1][0]);
-    let blobId = bytesToCleanString(result?.results?.[0].returnValues[2][0]);
+    let revoked = result?.results?.[0].returnValues?.[0][0][0];
+    let studentName = bytesToCleanString(result?.results?.[0].returnValues?.[1][0]);
+    let blobId = bytesToCleanString(result?.results?.[0].returnValues?.[2][0]);
 
     // const value = result?.returnValues[0];
     return {
@@ -74,7 +74,8 @@ export async function getCertificateIds(): Promise<string> {
       transactionBlock: tx,
       sender: MY_ADDRESS,
     });
-    let id = bytesToSuiAddress( result?.results?.[0].returnValues[0][0]);
+    let ud: any = result?.results?.[0].returnValues?.[0][0];
+    let id = bytesToSuiAddress(ud);
     console.log('Recent Certificate ID:', id);
     return id; // Return up to 3 newest IDs
     
@@ -179,20 +180,19 @@ export async function revokeCertificate(wallet: ReturnType<typeof useWallet>, ce
   tx.moveCall({
     target: `${PACKAGE_ID}::certificate_system::revoke_certificate`,
     arguments: [
-      tx.object(wallet.account?.address || ''),
+      tx.object(PRO_VC),
       tx.object(CERTIFICATE_STORE_ID),
       tx.pure.address(certId),
     ],
   });
 
   try {
-    const result = await wallet.signAndExecuteTransactionBlock({
-      transactionBlock: tx,
-      options: { showEffects: true },
+    const result = await wallet.signAndExecuteTransaction({
+      transaction: tx,
     });
-    return result.effects?.status.status === 'success';
+    return { success: true};
   } catch (error) {
     console.error('Error revoking certificate:', error);
-    return false;
+    return { success: false };
   }
 }

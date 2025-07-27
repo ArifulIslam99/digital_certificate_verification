@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { verifyCertificate } from '../app/utils/suiContract';
+import Image from 'next/image';
 
 export default function Home() {
   const [certId, setCertId] = useState<string>('');
@@ -20,7 +21,7 @@ export default function Home() {
     setBlobId('');
 
     const result = await verifyCertificate(certId);
-    setIsValid(result.isValid);
+    setIsValid(!!result.isValid );
     setStudentName(result.studentName);
     setBlobId(result.blobId);
 
@@ -71,12 +72,16 @@ export default function Home() {
             {isValid && blobId && (
               <div className="mt-4">
                 <h3 className="text-lg font-semibold mb-2 text-gray-700">Certificate</h3>
-                <img
-                  src={`https://ipfs.io/ipfs/${blobId}`}
-                  alt="Certificate"
-                  className="w-full rounded shadow-md"
-                  onError={() => setMessage('Failed to load certificate image.')}
-                />
+                <Image
+                    src={`https://ipfs.io/ipfs/${blobId}`}
+                    alt="Certificate"
+                    className="w-full rounded shadow-md"
+                    width={0}
+                    height={0}
+                    sizes="70vw"
+                    style={{ width: '100%', height: 'auto' }}
+                    onError={() => setMessage('Failed to load certificate image.')}
+                  />
               </div>
             )}
           </div>
