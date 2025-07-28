@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { verifyCertificate } from '../app/utils/suiContract';
 import Image from 'next/image';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function Home() {
   const [certId, setCertId] = useState<string>('');
@@ -20,13 +21,18 @@ export default function Home() {
     setStudentName('');
     setBlobId('');
 
-    const result = await verifyCertificate(certId);
-    setIsValid(!!result.isValid );
-    setStudentName(result.studentName);
-    setBlobId(result.blobId);
+    try {
+      const result = await verifyCertificate(certId);
+      setIsValid(!!result.isValid);
+      setStudentName(result.studentName);
+      setBlobId(result.blobId);
 
-    if (!result.isValid) {
-      setMessage('Certificate is invalid or revoked.');
+      if (!result.isValid) {
+        setMessage('Certificate is invalid or revoked.');
+      }
+    } catch (error) {
+      console.error('Error verifying certificate:', error);
+      setMessage('Failed to verify certificate. Check console for details.');
     }
 
     setLoading(false);
@@ -61,32 +67,40 @@ export default function Home() {
             {isValid && studentName && (
               <div>
                 <p className="text-center text-gray-800">
-                <strong>Student Name:</strong> {studentName}
-              </p>
-              <p className="text-center text-gray-800">
-                <strong>Status:</strong> <span className='text-green-800'>{isValid ? 'Valid' : 'Invalid'}</span>
-              </p>
+                  <strong>Student Name:</strong> {studentName}
+                </p>
+                <p className="text-center text-gray-800">
+                  <strong>Status:</strong>{' '}
+                  <span className={isValid ? 'text-green-800' : 'text-red-800'}>
+                    {isValid ? 'Valid' : 'Invalid'}
+                  </span>
+                </p>
               </div>
-              
             )}
             {isValid && blobId && (
               <div className="mt-4">
                 <h3 className="text-lg font-semibold mb-2 text-gray-700">Certificate</h3>
                 <Image
-                    src={`https://ipfs.io/ipfs/${blobId}`}
-                    alt="Certificate"
-                    className="w-full rounded shadow-md"
-                    width={0}
-                    height={0}
-                    sizes="70vw"
-                    style={{ width: '100%', height: 'auto' }}
-                    onError={() => setMessage('Failed to load certificate image.')}
-                  />
+                  src={`https://ipfs.io/ipfs/${blobId}`}
+                  alt="Certificate"
+                  className="w-full rounded shadow-md"
+                  width={0}
+                  height={0}
+                  sizes="70vw"
+                  style={{ width: '100%', height: 'auto' }}
+                  onError={() => setMessage('Failed to load certificate image.')}
+                />
               </div>
             )}
           </div>
         </div>
       </main>
+      {isValid && certId && (
+        <div className="fixed bottom-4 left-4 bg-white p-2 rounded-lg shadow-lg">
+          <QRCodeSVG className='mx-auto' value={certId} size={100} />
+          <p className="text-center text-sm text-gray-600 mt-2">Scan for Certificate ID</p>
+        </div>
+      )}
     </div>
   );
 }
